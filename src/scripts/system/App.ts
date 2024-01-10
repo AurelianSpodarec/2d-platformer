@@ -1,8 +1,6 @@
 'use client'
 
 import * as PIXI from "pixi.js";
-import { ScenesManager } from "./ScenesManager";
-import { Loader } from "./Loader";
 
 class Application {
   run(config) {
@@ -14,7 +12,6 @@ class Application {
     });
     document.body.appendChild(this.app.view);
 
-    // this.loader = new Loader(this.app.loader, this.config);
     this.start();
   }
 

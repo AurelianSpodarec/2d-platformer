@@ -1,4 +1,4 @@
-import { Game } from "./Game";
+import { Game } from "./GameScene";
 
 export const Config = {
   loader: "",
