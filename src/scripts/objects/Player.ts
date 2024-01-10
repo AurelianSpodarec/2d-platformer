@@ -59,10 +59,10 @@ export class Player {
   update() {
     console.log("@'''''''''''''''''''''''''''''''", this.position)
     if (this.keyState['w']) {
-      this.position.y += 10;
+      this.position.y -= 10;
     }
     if (this.keyState['s']) {
-      this.position.y -= 10;
+      this.position.y += 10;
     }
     if (this.keyState['a']) {
       this.position.x -= 10;
@@ -70,8 +70,7 @@ export class Player {
     if (this.keyState['d']) {
       this.position.x += 10;
     }
-    this.position.x += 10
-    // this.me.position.copyFrom(this.position);
+    this.me.position.copyFrom(this.position);
   }
 
   destroy() {
