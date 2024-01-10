@@ -14,6 +14,6 @@ export class Game {
   }
 
   start() {
-    this.container.addChild(this.player.createMe()); 
+    this.container.addChild(this.player.me); 
   }
 }

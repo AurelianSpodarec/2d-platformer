@@ -43,6 +43,7 @@ export class Player {
         this.keyState['d'] = keyState;
         break;
     }
+    
   }
 
   createMe() {
@@ -69,6 +70,7 @@ export class Player {
     if (this.keyState['d']) {
       this.position.x += 10;
     }
+    this.position.x += 10
     // this.me.position.copyFrom(this.position);
   }
 
