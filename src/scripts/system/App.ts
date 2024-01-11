@@ -8,7 +8,7 @@ class Application {
     this.config = config;
 
     this.app = new PIXI.Application({
-      background: '#1099bb',
+      background: '#000000',
       resizeTo: window
     });
     document.body.appendChild(this.app.view);

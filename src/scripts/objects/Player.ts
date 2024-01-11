@@ -51,11 +51,18 @@ export class Player {
   createMe() {
     const me = new PIXI.Graphics()
     me.beginFill(0xffffff);
+
     me.drawCircle(me.width / 2, me.height / 2, 16 / 2);
     me.endFill();
+
+    const texture = PIXI.Texture.from('assets/smileys/smile.png');
+    const image = new PIXI.Sprite(texture);
+    image.anchor.set(0.5);
+    
     me.x = this.position.x;
     me.y = this.position.y;
-    return me;
+    
+    return image;
   }
 
   update() {
