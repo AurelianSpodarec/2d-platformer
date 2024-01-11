@@ -51,7 +51,7 @@ export class Player {
   createMe() {
     const me = new PIXI.Graphics()
     me.beginFill(0xffffff);
-    me.drawCircle(me.width, me.height, 16);
+    me.drawCircle(me.width / 2, me.height / 2, 16 / 2);
     me.endFill();
     me.x = this.position.x;
     me.y = this.position.y;
