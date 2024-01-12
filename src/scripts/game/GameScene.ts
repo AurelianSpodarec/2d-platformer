@@ -14,10 +14,11 @@ export class Game {
 
   update(dt) {
     this.player.update(dt)
+    this.player.setWorldMap(this.world.getMap());
   }
 
   start() {
-    this.container.addChild(this.player.me); 
     this.container.addChild(this.world.getWorldContainer())
+    this.container.addChild(this.player.me); 
   }
 }

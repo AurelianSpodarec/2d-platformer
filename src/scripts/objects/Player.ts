@@ -6,7 +6,7 @@ export class Player {
   private position: PIXI.Point = new PIXI.Point();
   private keyState: { [key: string]: number } = {};
 
-  constructor() {
+  constructor(worldMap) {
     this.me = this.createMe();
 
     App.app.ticker.add(this.update, this);
@@ -14,9 +14,14 @@ export class Player {
     this.width = 16;
     this.height = 16;
     this.size = 16;
-    this.vel = { x: 0.15, y: 0.15 };
 
-    this.position.set(App.app.screen.width / 2 - this.width, App.app.screen.height / 2 - this.height);
+    this.gravity = 0.5; 
+    this.isJumping = false;
+    this.vel = { x: 0.15, y: 0.15 };
+    this.worldMap = worldMap;
+
+
+    this.position.set(this.size / 2 + 16,this.size / 2 + 16);
     this.setupKeyboardEvents();
   }
 
@@ -66,6 +71,11 @@ export class Player {
   }
 
   update() {
+    // this.velocity.y += this.gravity;
+
+    // // Update player position based on velocity
+    // this.position.x += this.velocity.x;
+    // this.position.y += this.velocity.y;
     if (this.keyState['w'] || this.keyState['ArrowUp']) {
       this.position.y -= 10;
     }
@@ -78,7 +88,37 @@ export class Player {
     if (this.keyState['d'] || this.keyState['ArrowRight']) {
       this.position.x += 10;
     }
+
+
+    // Check for collisions with the world map
+    // this.checkWorldCollisions();
+    
     this.me.position.copyFrom(this.position);
+  }
+
+  // checkWorldCollisions() {
+  //   // Assuming tileSize is the size of your tiles in the world
+  //   const tileSize = App.tileSize;
+
+  //   // Calculate the player's grid position in the world
+  //   const gridX = Math.floor(this.position.x / tileSize);
+  //   const gridY = Math.floor(this.position.y / tileSize);
+
+  //   // Check if the player is on a wall tile (assuming 1 represents a wall)
+  //   if (this.worldMap[gridY][gridX] === 1) {
+  //     // If on a wall, stop falling and set the player on top of the wall
+  //     this.velocity.y = 0;
+  //     this.position.y = gridY * tileSize;
+  //     this.isJumping = false;
+  //   }
+  // }
+
+   // Add a jump method if needed
+   jump() {
+    if (!this.isJumping) {
+      this.velocity.y = -10; // Adjust jump strength
+      this.isJumping = true;
+    }
   }
 
   destroy() {
