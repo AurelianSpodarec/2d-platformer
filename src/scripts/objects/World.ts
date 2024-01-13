@@ -73,32 +73,6 @@ const DATA_WORLDS: IWorld[] = [
 
 
 
-
-
-
-
-
-
-
-
-function generateDefaultMap(width, height) {
-  const outerWall = Array(width).fill(1);
-  const innerEmpty = Array(width - 2).fill(0);
-
-  const layers = [
-    outerWall,
-    ...Array(height - 2).fill(innerEmpty),
-    outerWall,
-  ];
-
-  return {
-    tileSize: 16,
-    height,
-    width,
-    layers,
-  };
-}
-
 function generateArray(rows = 20, cols = 10) {
   const map = {
     height: cols,
@@ -124,6 +98,14 @@ function generateArray(rows = 20, cols = 10) {
   return map;
 }
 
+
+function getPositionOfTile(map) {
+
+}
+
+function getPositionOfTileStack(map) {
+  // Layer
+}
 
 function compileMapForRender(mapData) {
 
@@ -153,28 +135,23 @@ function compileMapForRender(mapData) {
 
 
 const createEmptyMap = compileMapForRender(generateArray())
-
 console.log("create empty map", createEmptyMap)
+
+
+
+
 export class World {
   private worldContainer: PIXI.Container;
   private map: [];
 
   constructor() {
     this.map = createEmptyMap;
-
     this.worldContainer = this.createWorld();
   }
 
-  // make map width dynamic from world creation
-  // ... (previous code)
-
-  // ... (previous code)
-
-  // ... (previous code)
-
-  // ... (previous code)
-
-  // ... (previous code)
+  // ===========================================================
+  //  Event Listeners Handlers
+  // ===========================================================
 
   private createWorld(mapWidth = 10) {
     const tileWidth = 16;
@@ -194,7 +171,7 @@ export class World {
       borderGraphics.drawRect(0, 0, sprite.width, sprite.height);
       sprite.addChild(borderGraphics);
     };
-
+    
     const createMouseOutHandler = (sprite) => () => {
       // Remove the border effect by clearing the sprite's children
       sprite.removeChildren();
@@ -222,8 +199,10 @@ export class World {
 
             sprite.interactive = true;
             sprite.buttonMode = true;
-            sprite.on('mouseover', createMouseOverHandler(sprite, cellIndex, layerIndex));
-            sprite.on('mouseout', createMouseOutHandler(sprite));
+            
+            sprite.on('mouseover', function() {
+              console.log({ tileStack, cellIndex, cellX, cellY, tile, layerIndex })
+            })
           }
         });
       }
@@ -234,33 +213,11 @@ export class World {
     return container;
   }
 
-  // ... (remaining code)
-
-
-  // ... (remaining code)
-
-  // ... (remaining code)
-
-
-  // ... (remaining code)
-
-
-  // ... (remaining code)
-
 
   public getWorldContainer() {
     return this.worldContainer;
   }
 }
-
-
-
-
-
-
-
-
-
 
 
 // private renderTile() {//renderTile() {
