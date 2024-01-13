@@ -7,7 +7,7 @@ export class Game {
   constructor() {
     this.container = new PIXI.Container();
     this.player = new Player();
-    this.world = new World();
+    this.world = new World(null, { width: 50, height: 50 });
 
     this.start();
   }
@@ -19,6 +19,6 @@ export class Game {
 
   start() {
     this.container.addChild(this.world.getWorldContainer())
-    this.container.addChild(this.player.me); 
+    this.container.addChild(this.player.me);
   }
 }
