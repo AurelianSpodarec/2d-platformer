@@ -1,7 +1,7 @@
 'use client'
 
 import { Config } from "@/scripts/game/Config";
-import { App } from "@/scripts/system/App";
+import { App } from "@/scripts/engine/App";
 import { useEffect, useState } from "react";
 
 // Player can own a "World"

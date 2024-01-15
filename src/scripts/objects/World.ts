@@ -1,142 +1,110 @@
 import * as PIXI from "pixi.js";
-import { App } from "../system/App";
+import { App } from "../engine/App";
 import { IWorld } from "../interface/IWorld";
 import TILE_TYPES from "../constants/TileTypes";
-
-
-// TODO: Create Empty world with: 25x100, 75x20, 100x100
-
-// TODO: Player can create a world e.g. 20x500
-// TODO: Player can load a world that already exist
-
-function generateArray(rows = 20, cols = 10) {
-  const map = {
-    height: cols,
-    width: rows,
-    layers: []
-  }
-
-  const background = Array.from({ length: rows * cols }).fill(0);
-  map.layers[0] = background
-
-  const interactive = [];
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      if (i === 0 || i === rows - 1 || j === 0 || j === cols - 1) {
-        interactive.push(1);
-      } else {
-        interactive.push(0);
-      }
-    }
-  }
-  map.layers[1] = interactive
-
-  return map;
-}
-
-
-// function getPositionOfTile(map) {
-
-// }
-
-// function getPositionOfTileStack(map) {
-//   // Layer
-// }
-
-function compileMapForRender(mapData: IWorld) {
-
-  console.log("generate a world", generateArray(10, 10))
-  // Create an array based on the map size as determined by the width and
-  // height, then fill it with nulls
-  const map = Array(mapData.width * mapData.height).fill(null)
-
-  // Update the map with the actual tiles to be rendered at each coordinate
-  return mapData.layers.reduce((accumulator, tileIDs, layerIndex) => {
-    tileIDs.forEach((tileID, tileIndex) => {
-      const tileData = TILE_TYPES[tileID]
-
-      if (!tileData) return
-
-      // Create an array if necessary to represent our tile stack
-      if (!accumulator[tileIndex]) {
-        accumulator[tileIndex] = []
-      }
-
-      accumulator[tileIndex][layerIndex] = tileData
-    })
-
-    return accumulator
-  }, map)
-}
-
-
-const createEmptyMap = compileMapForRender(generateArray())
-console.log("create empty map", createEmptyMap)
-
-
-// class Tile {
-//   renderTile
-//   highlightTile
-//  
-// }
+import DATA_WORLDS from "../fakeData/worlds";
 
 export class World {
-  private worldContainer: PIXI.Container;
   private map: [];
 
-  constructor() {
-    this.map = createEmptyMap;
-    this.worldContainer = this.createWorld();
+  constructor(world) {
+    this.loadWorld = this.loadWorld();
+    this.world = {};
+    this.worldContainer = new PIXI.Container;
   }
 
   // ===========================================================
-  //  Event Listeners Handlers
+  // Startup
   // ===========================================================
 
-  private handleTileMouseOver() {
+  createNewWorld(title, width, height) {
+    const map = this.compileMapForRender(this.generateEmptyWorld(width, height));
 
+    this.world = {
+      name: title || "New World Title",
+      width: width,
+      height: height,
+      ownedBy: 0,
+      map: map
+    }
+    console.log("this.world2, ", this.world)
   }
 
-  private handleTileMouseOut() {
+  fetchWorld() {
+    return res = DATA_WORLDS[0]
+  }
 
+  loadWorld() {
+    // CHeck is world loaded
+    // Load the data of the world, map etc
+    const worldExists = false
+    if(false) {
+
+    } else {
+      this.createNewWorld("New world", 30,30)
+      this.worldContainer = this.renderWorld();
+    }
   }
 
   // ===========================================================
-  //  Class Functions
+  //  World Functions
   // ===========================================================
 
-  private highlightTile() {
-
+  generateEmptyWorld(rows, cols) {
+    const map = {
+      height: cols,
+      width: rows,
+      layers: []
+    }
+    
+    const background = Array.from({ length: rows * cols }).fill(0);
+    map.layers[0] = background
+    
+    const foreground = [];
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        if (i === 0 || i === rows - 1 || j === 0 || j === cols - 1) {
+          foreground.push(1);
+        } else {
+          foreground.push(0);
+        }
+      }
+    }
+    map.layers[1] = foreground
+  
+    return map;
   }
 
-  private renderTile({ tile, x, y, container }) {
-    const texture = PIXI.Texture.from(tile.texture);
-    const sprite = new PIXI.Sprite(texture);
+  private compileMapForRender(mapData: IWorld) {
+    // console.log("generate a world", this.generateEmptyWorld(10, 10))
+    const map = Array(mapData.width * mapData.height).fill(null)
+    return mapData.layers.reduce((accumulator, tileIDs, layerIndex) => {
+      tileIDs.forEach((tileID, tileIndex) => {
+        const tileData = TILE_TYPES[tileID]
+        if (!tileData) return
 
-    sprite.position.set(x, y);
-    container.addChild(sprite);
-
-    sprite.interactive = true;
-    sprite.buttonMode = true;
-
-    sprite.on('mouseover', function () {
-      // console.log({ tileStack, cellIndex, cellX, cellY, tile, layerIndex })
-      // console.log("realIndex", (cellX) * (cellY)
-      console.log("hi")
-    })
+        if (!accumulator[tileIndex]) {
+          accumulator[tileIndex] = []
+        }
+  
+        accumulator[tileIndex][layerIndex] = tileData
+      })
+  
+      return accumulator
+    }, map)
   }
-
-  private createWorld(mapWidth = 10) {
+  
+  private renderWorld(mapWidth = 10) {
     const tileWidth = 16;
     const tileHeight = 16;
     const container = new PIXI.Container();
     let cellIndex = 0;
 
-    while (cellIndex < this.map.length) {
-      const tileStack = this.map[cellIndex];
+    while (cellIndex < this.world.map.length) {
+      const tileStack = this.world.map[cellIndex];
 
-      const cellX = cellIndex % mapWidth;
-      const cellY = Math.floor(cellIndex / mapWidth);
+      const cellX = cellIndex % this.world.width;
+      const cellY = Math.floor(cellIndex / this.world.width);
 
       const x = cellX * tileWidth;
       const y = cellY * tileHeight;
@@ -145,7 +113,10 @@ export class World {
         tileStack.forEach((tile, layerIndex) => {
 
           if (tile?.texture) {
-            this.renderTile({ tile, x, y, container })
+            const texture = PIXI.Texture.from(tile.texture);
+            const sprite = new PIXI.Sprite(texture);
+            sprite.position.set(x, y);
+            container.addChild(sprite);
           }
 
         });
@@ -157,11 +128,80 @@ export class World {
     return container;
   }
 
-
   public getWorldContainer() {
     return this.worldContainer;
   }
+
+    
+  // ===========================================================
+  //  Event Listeners Handlers
+  // ===========================================================
+  
+  private handleTileMouseOver() {
+
+  }
+  
+  private handleTileMouseOut() {
+    
+  }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // private renderTile({ tile, x, y, container, cellY, mapWidth, cellX, map }) {
+  //   const texture = PIXI.Texture.from(tile.texture);
+  //   const sprite = new PIXI.Sprite(texture);
+
+  //   sprite.position.set(x, y);
+  //   container.addChild(sprite);
+
+  //   sprite.interactive = true;
+  //   sprite.buttonMode = true;
+
+  //   sprite.on('mouseover', function () {
+  //     // console.log({ tileStack, cellIndex, cellX, cellY, tile, layerIndex })
+  //     // console.log("realIndex", (cellX) * (cellY)
+  //     console.log("hi")
+
+  //     // function updateCell(cellX, cellY, tileType) {
+  //       const cellIndex = (cellY * mapWidth) + cellX
+  //       const tileStack = map[cellIndex]
+      
+  //       tileStack[1] = 0
+  //     // }
+  //   })
+  // }
+
 
 
 // private renderTile() {//renderTile() {
@@ -180,4 +220,11 @@ export class World {
 //     }
 //   }
 //   return container;
+// }
+
+
+
+
+// private highlightTile() {
+
 // }
